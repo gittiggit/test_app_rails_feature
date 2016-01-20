@@ -1,0 +1,12 @@
+<h1 align="center">All tasks</h1>
+<% @tasks.each do |task| %>
+  <div class="row">
+    <div class="col-xs-8 col-xs-offset-2">
+      <div class="well well-lg">
+        <div class="article-title">
+          <%= link_to task.name, task %>
+        </div>
+      </div>
+    </div>
+  </div>
+<% end %>
