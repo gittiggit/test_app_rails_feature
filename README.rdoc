@@ -1,0 +1,487 @@
+== README
+
+This README would normally document whatever steps are necessary to get the
+application up and running.
+
+Things you may want to cover:
+
+* Ruby version
+
+* System dependencies
+
+* Configuration
+
+* Database creation
+
+* Database initialization
+
+* How to run the test suite
+
+* Services (job queues, cache servers, search engines, etc.)
+
+* Deployment instructions
+
+* ...
+
+
+Please feel free to use a different markup language if you do not plan to run
+<tt>rake doc:app</tt>.
+======================================================
+======================================================
+*** To reload the console
+=> reload!
+=> article = Article.create()
+=> article.errors.any?
+=> article.errors.full_messages
++++++++++++++++++++++++++++++++++++++
+**To deal with model back form(the form that have a model) rails provides form_for method. 
+
+#render plain: params[:article].inspect
+
+
++++++++++++++++++++++++++++++++++++++++++++++++++++
+** Perform the Article crud 
++++++++++++++++++++++++++++++++++++++++++++++++++++
+01. first in the gemfile, include the following lines
+gem 'bootstrap-sass', '~> 3.3.6'
+gem 'sass-rails', '>= 3.2'
+02. then run bundle install
+03. Create a assets/stylessheets/custom.css.scss
+04. Add the following line at the top of this file
+@import "bootstrap-sprockets";
+@import "bootstrap";
+05. In the assets/javascripts/application.js
+include the following line 
+//= require bootstrap-sprockets
+like as follows:
+//= require jquery
+//= require jquery_ujs
+//= require bootstrap-sprockets
+//= require turbolinks
+//= require_tree .
+
+++++++++++++++++++++++++++++++++++++++++++++++++
+** Add the _navigation.html.erb
+** Design the home page
+** Add the _footer.html.erb
+** Add the design for the footer in the custom css and follow the drive docs
+
+=================================================================
+** Now style the form:
+** Style the errors partial
+** Style the messages partial
+** Style the show page of the article
+** Style the index page
+================================================================
+Step 13: Create user
+rails g model create User username:string email:string
+user = User.find(2)
+
+====================================================================
+
+Step 14: Validates for user model:
+ -user name must be present
+ -email must be present and unique
+ -validate email format using regex
+===================================================================
+
+Step 15: generate migration to add user_id column to article
+rails g migration add_user_id_to_articles user_id:integer
+rake db:migrate
+
+==================================================================
+** Article belongs to a user and a user has many articles
+
+u = User.create(username: "Mahmud", email:"m@gmail.com")
+ar = Article.create(title:"A title", description:"Some description", user: u)
+ar1 = Article.create(title:"A title", description:"Some description", user: u)
+ar2 = Article.create(title:"A title", description:"Some description", user: u)
+
+Now if I run the command
+u.articles  (because a user may have many articles)
+It will give me all the articles belongs to a user u. But if I want to get the user that has the article ar, I have to run the command
+ar.user  (not ar.users because an article belong to a user)
+
+Now you want to know about the username who have the article ar1, you have to run the command
+ar1.user.username or to get the email (not users)
+ar1.user.email (not users)
+
+Now think differently. You need to have all the article's title that belong to a user u. To do this first you have to get all the
+articles(as a collection) associated with a user by this command u.articles and then run a loop through them to extract the title
+like as follows
+u.articles.each do |ar|
+    ar.title
+end
+
+=====================================================================================
+Step 16: Add a debugger to the application.html.er
+
+<%= debug(params) if Rails.env.development? %>
+
+=======================================================================================
+
+Step 17: using hs_secure_password
+  a. install the gem "gem 'bcrypt', '~> 3.1.7'"
+  b. add this in the user.rb "has_secure_password"
+  c. generate a migration to add the password_digest column to the users tabls
+     rails g migration add_password_digest_to_users password_digest:string     and the rake db:migrate
+  d.  u = User.last
+  u.authenticate("password")
+  Here authenticate method returns the u if password is matched else return false
+
+==================================================================================
+Step 17: named route for user signup: in the routes.rb
+get "signup", to: "users#new"
+
+Add the users controller
+rails g controller Users index new edit show
+
+** To handle the post request or form submission for create user, in the routes.rb
+ post "users", to: "users#create"
+ or
+ resources :users
+ *** Observe the code,
+ 	resources :users, except:[:new] # because there is a named route for the user/new
+ 	get "signup", to: "users#new"
+
+ ***
+====================================================================================
+Step 18: edit user, create _form.html.erb partial for edit and new
+         and in the form partial to change the text for the submit button dynamically
+         <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <%= u.submit(@user.new_record? ? "Signup" : "Update account", class:"btn btn-primary btn-lg") %>
+            </div>
+         </div>
+
+================================================================================
+Step 19 : Add the gravatar for the user(follow the drive docs) in the users/show.html.erb
+          show all the articles associated with a user. Here I used used the articles/article partial for this purpose
+          by passing the object to this partial
+
+==============================================================================================
+Step 20 : index all the user and inthe article show, add the gravator of the article creator and his number of article
+
+=========================================
+
+Step 21: Adding pagination
+    a. install the gem
+    gem "will_paginate", "3.0.7"
+    gem "bootstrap-will_paginate", "0.0.10"
+
+    b. In the users controllers index action
+    def index
+    		@users = User.paginate(page: params[:page], per_page: 2)
+      end
+
+    c. In the users/index.html.erb
+      <div align="center">
+        <%= will_paginate %>
+      </div>
+
+    d. To paginate all the articles of a user in the users/show page, first you have to grav all the articles
+      associate with a user in the users controler's show action and then use it in the users show view like as follows
+      in the users' controller
+      def show
+      		@user = User.find params[:id]
+      		@user_articles = @user.articles.paginate(page: params[:page], per_page: 2)
+      end
+
+      In the users/show
+        <div align="center">
+          <%= will_paginate @user_articles %>
+        </div>
+          <%= render "articles/article", obj: @user_articles %>
+        <div align="center">
+          <%= will_paginate @user_articles %>
+        </div>
+
+========================================================================
+Step 22: User login
+      a.Create a session controller
+rails g controller Sessions new
+ in the routes.rb
+ get "login", to: "sessions#new"
+ 	get "signout", to: "sessions#destroy"
+ 	resources :sessions, only:[:create]
+
+ in the sessions/new.html.erb
+ 	-----------------------------------
+
+ 	<h1 align="center">Log in</h1>
+    <%= form_for(:session, html: {class:"form-horizontal", role: "form"}, url: login_path) do |u| %>
+        <div class="form-group">
+          <div class="control-label col-sm-2">
+            <%= u.label :email %>
+          </div>
+          <div class="col-sm-8">
+            <%= u.email_field :email, class: "form-control", placeholder: "Enter you email", autofocus: true %>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="control-label col-sm-2">
+            <%= u.label :password %>
+          </div>
+          <div class="col-sm-8">
+            <%= u.password_field :password, class: "form-control", placeholder: "Enter password", autofocus: true  %>
+          </div>
+        </div>
+        <div class="form-group">
+          <div class="col-sm-offset-2 col-sm-10">
+            <%= u.submit class:"btn btn-primary btn-lg" %>
+          </div>
+        </div>
+    <% end %>
+    <div class="col-xs-12 col-xs-offset-5">
+      <%= link_to "[Cancel request and back to article listing]", articles_path %>
+    </div>
+
+------------------------------------------------------
+Step 23: Session create and destroy using sessions controller Here observe the code,
+ <%= form_for(:session, html: {class:"form-horizontal", role: "form"}, url: login_path) do |u| %>
+ ** Here this form is not a model back form. Here we are creating a form for the session controller and specifying a url for it. We need to keep
+ the information in a session variable in the create action of the session controller, when the user submit the form. And we will take the value
+ from the params hash like as follows
+ params[:session][:email]
+ or
+ params[:session][:password]
+
+ -------------------------------
+ Another thing to know, follow the codes in the routes.rb
+ 	get "login", to: "sessions#new"
+ 	post "login", to: "sessions#create"
+ 	delete "signout", to: "sessions#destroy"
+ Here we are not using resourceful route, because sessions controller in not a model back controller. And observe the code for the
+ 	post and delete
+ 	In the sessions/new
+ 	<%= form_for(:session, html: {class:"form-horizontal", role: "form"}, url: login_path) do |u| %>
+ 	In the logout link
+ 	 <li><%= link_to "Log out",signout_path, method: :delete %></li>
+ Here we have no object to send and it different from deleting an object from the database like as follows
+ 	 <li><%= link_to "Delete", article_path(article_object), method: :delete %></li>
+ 	 <li><%= link_to "Delete", article_path, method: :delete %></li>
+ ===================================================================================================
+
+Step 24: Let's know something. The methods we create in our application controller are available to all of our controller. But thery are not
+         available to our views by-default. If we want to use them in our views, then we have to tell the rails that, these are helper methods.
+
+===========================================================================
+
+Step 25: Changing navigation, signup path in the hone, home action, restricting actions(edit, and delete) of the articles index page to
+         the article's owner.
+
+         <% if logged_in? && current_user == article.user %>
+            <div class="article-actions">
+              <%= link_to "Edit", edit_article_path(article), class: "btn btn-xs btn-primary" %> |
+              <%= link_to "Delete", article, method: :delete, data:{confirm:"Are you sure to delete"},
+                          class: "btn btn-xs btn-danger" %>
+            </div>
+          <% end %>
+
+------------------------------------------------------------------------
+"hello"   #-> this is a string; it is not in a boolean context
+!"hello"  #-> this is a string that is forced into a boolean
+          #   context (true), and then negated (false)
+!!"hello" #-> this is a string that is forced into a boolean
+          #   context (true), and then negated (false), and then
+          #   negated again (true)
+!!nil     #-> this is a false-y value that is forced into a boolean
+          #   context (false), and then negated (true), and then
+          #   negated again (false)
+In your example, the signed_in? method should return a boolean value (as indicated by convention by the ? character).
+The internal logic it uses to decide this value is by checking to see if the current_user variable is set. If it is set,
+it will evaluate to true in a boolean context. If not, it will evaluate as false. The double negation forces the return
+value to be a boolean.
+
+
+=======================================================================================
+
+Step 26 : Restricting actions to logged_in users
+          Though we restricted the view link, we can still access the resource through url: linkhttp://localhost:3000/articles/2/edit,
+          To pervent this in the article's controller, call the require_user method from the application controller through the
+          before_action filter
+
+          before_action :require_user, except: [:index, :show]
+
+          def require_user
+            if !logged_in?
+              flash[:danger] = "You must be logged in to perform that action"
+              redirect_to root_path
+            end
+          end
+
+          After doing that, if I logged_in, I can still edit another users resources through the url like as
+            http://localhost:3000/articles/2/edit
+            http://localhost:3000/articles/3/edit
+          To prevent this, in the article controller
+          before_action :require_same_user, except: [:edit, :update, :destroy]
+
+          and
+
+          private
+          def require_same_user
+            if current_user != @article.user
+              flash[:notice] = "You can only edit/delete your own article"
+              redirect_to root_path
+            end
+          end
+** for the users controller
+          before_action :require_same_user, only: [:edit, :update]
+          def require_same_user
+            if current_user != @user
+              flash[:danger] = "You can only edit your own account"
+              redirect_to root_path
+            end
+          end
+
+** Creating article for the current_user
+          def create
+              #render plain: params[:article].inspect
+              @article = Article.new article_params
+              @article.user = current_user
+              if @article.save
+                flash[:success] = "Added successfully"
+                redirect_to article_path(@article)
+              else
+                render :new
+              end
+          end
+===============================================================================================
+
+Step 26: When a user first signed up, take him as a logged_in user. We did this in the users controller's
+         create action by taking him on the session
+         def create
+           @user = User.new user_params
+             if @user.save
+               session[:user_id] = @user.id
+               flash[:success] = "User created successfully"
+               redirect_to @user
+             else
+               render :new
+             end
+         end
+
+==========================================================================================
+
+Step 27: Adding admin functionality
+         a. Add a new column(admin:boolean, default: false) to users table
+         b.We want if an article is not belongs to a user but the user is an admin, then he can edit and update and delete
+         the resource(article), that means to give him access to article controller, change the require_same_user method
+         like as follows
+         def require_same_user
+           if current_user != @article.user and !current_user.admin?
+             flash[:notice] = "You can only edit/delete your own article"
+             redirect_to root_path
+           end
+         end
+
+         To show the edit and delete link to admin, change the codes
+           <% if logged_in? && (current_user == article.user || current_user.admin?) %>
+
+
+
+
+Step 28: Admin user to delete a user and when a user is deleted, all of it's article should be deleted
+         To do that in the user.rb,
+         has_many :articles, dependent: :destroy
+         In the users controller
+         before_action :require_admin, only: [:destroy]
+         private
+         def require_admin
+           if logged_in and !current_user.admin?
+             flash[:danger] = "Only admin user can perform this action"
+             redirect_to root_path
+           end
+         end
+         In the users index
+         <% if logged_in? and current_user.admin? %>
+            <li><%= link_to "Delete this user", user_path(user), method: :delete,
+                    data: {confirm: "Are you sure to delete"} %>
+            </li>
+         <% end %>
+
+================================================================================================
+
+Step 29: a. Minitest is the rails default testing framework
+         b. unit test for model(tests individual unit of the model, example: validation), functionl and integration test for the controller and views
+         c.
+Step 30: a. Adding category, and it's index, show, new, create, delete, update
+         b. Category show and index will be shown by all but only admin can delete and create
+
+         before_action :require_admin, except: [:index, :show]
+         def require_admin
+           if !logged_in? || (logged_in? and !current_user.admin?)
+             flash[:danger] = "Only admin can perform this action"
+             redirect_to categories_path
+           end
+         end
+
+======================================================================================================
+
+Step 30: Working with categori in the view, in the navigation.......
+         Adding create category link to category dropdown for the admin
+          <ul class="dropdown-menu">
+            <%= link_to "All Categories", categories_path %>
+            <% Category.all.each do |category| %>
+              <li><%= link_to "#{category.name}"%></li>
+            <% end %>
+            <% if logged_in? && current_user.admin? %>
+              <li role="separator" class="divider"></li>
+              <li><b><%= link_to "Create new category", new_category_path %></b></li>
+            <% end %>
+          </ul>
+
+
+=============================================================================================
+
+Step 31: Creating association between article and the category(many-to-many)
+
+        a. Create a new table article_categories
+        b. rails g model ArticleCategory article:references category:references
+        c.Lets have some many-to-many association operation
+         ar = Article.last
+         ca = Category.last
+         ca.articles (will return an empty relation)
+         ca.articles << ar (Will insert in the join table=> article_categories)
+         ar1 = Article.first
+         ca.articles << ar1 (Will insert in the join table=> article_categories)
+         ca.articles (will return 2 article )
+         ca.article.size (Will return 2)
+         In the same way we can do for an article like as follows
+         ar1.categories << ca1
+         ar1.categories
+**** And to use(ar1.categories) this collection, we have to loop through it.
+
+Add collection checkbox to articles new page
+        <div class="form-group">
+          <div class="row">
+              <div class="col-sm-offset-2 col-sm-8">
+                <%= article.collection_check_boxes :category_ids, Category.all, :id, :name do |cb|  %>
+                  <% cb.label(class: "checkbox-inline input_checkbox") {cb.check_box(class: "checkbox") + cb.text} %>
+                <% end %>
+              </div>
+          </div>
+        </div>
+
+--------------------------------
+         private
+          def article_params
+            params.require(:article).permit :title, :description, category_ids: []
+         end
+
+===================================================================================================
+
+Step 32: Showing the associated categories to the articles's show page
+         a. In the articles/show, under the description
+          <% if @article.categories.any? %>
+             <p>Categories: <%= render @article.categories %></p>
+          <% end %>
+         This will render a partial(_category.html.erb) in the views/category, that is
+         <span class="badge"><%= link_to category.name, category %>&nbsp;</span>
+         Here it will get category from the code block in the show page.
+
+         b.In the same way,show the associated categories to the articles's index page
+
+         c. Add number of articles associated with every category index
+
+Step 33: Edit/update category, using categories/_form partial for this

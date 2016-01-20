@@ -1,0 +1,33 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Listing Test Jqueries</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Body</th>
+      <th>Salary</th>
+      <th>Date</th>
+      <th colspan="3"></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @test_jqueries.each do |test_jquery| %>
+      <tr>
+        <td><%= test_jquery.name %></td>
+        <td><%= test_jquery.body %></td>
+        <td><%= test_jquery.salary %></td>
+        <td><%= test_jquery.date %></td>
+        <td><%= link_to 'Show', test_jquery %></td>
+        <td><%= link_to 'Edit', edit_test_jquery_path(test_jquery) %></td>
+        <td><%= link_to 'Destroy', test_jquery, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Test jquery', new_test_jquery_path %>
