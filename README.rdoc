@@ -521,3 +521,78 @@ Step 34. Submit a form to another controller's action
            # end
          end
 
+================================================================================================
+
+Step 35: Submitting form using ajax(departments listing and create in the index page)
+         a. rails g model Department name:string location:string
+         b. rails g controller Departments index
+         c. views/departments/index
+           <h1 align="center">All the Departments</h1>
+           <div class="department-index">
+             <%= render @departments %>
+           </div>
+           <h3 align="center">Create new department</h3>
+           <%= form_for(@department, remote: true) do |d| %>
+             <p>
+               <%= d.label :name %>
+               <%= d.text_field :name %>
+             </p>
+             <p>
+               <%= d.label :location %>
+               <%= d.text_field :location %>
+             </p>
+             <p>
+              <%= d.submit %>
+             </p>
+           <% end %>
+
+         d. department controller
+
+         class DepartmentsController < ApplicationController
+           def index
+             @departments = Department.all
+             @department = Department.new
+           end
+
+           def create
+             @department = Department.create department_params
+
+             respond_to do |format|
+               if @department.save
+                 format.html {redirect_to departments_path, notice: "Department created"}
+                 format.js {}
+               else
+                 format.html {render action: :index}
+                 format.js {}
+               end
+             end
+           end
+
+           private
+           def department_params
+             params.require(:department).permit :name, :location
+           end
+         end
+
+""Notice the format.js in the respond_to block; that allows the controller to respond to your Ajax request.
+You then have a corresponding app/views/users/create.js.erb view file that generates the actual JavaScript
+code that will be sent and executed on the client side.""
+
+
+         f. departments/_department.html.erb
+
+         <p>
+           <b>Name:</b> <%= department.name %>
+         </p>
+         <p>
+           <b>Location:</b> <%= department.location %>
+         </p>
+
+         g. departments/create.js.erb
+
+         $("<%= escape_javascript(render @department) %>").appendTo(".department-index");
+
+
+==========================================================================================================
+
+

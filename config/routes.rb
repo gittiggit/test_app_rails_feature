@@ -3,6 +3,8 @@ Rails.application.routes.draw do
   resources :test_jqueries
   resources :tasks
   resources :experiments
+  resources :departments
+
   get 'welcomes/about'
 
   root "welcomes#home"
