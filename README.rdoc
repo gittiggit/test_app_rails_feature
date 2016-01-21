@@ -485,3 +485,39 @@ Step 32: Showing the associated categories to the articles's show page
          c. Add number of articles associated with every category index
 
 Step 33: Edit/update category, using categories/_form partial for this
+
+=========================================================================================================
+
+Step 34. Submit a form to another controller's action
+       a. I want to submit the value using form_tag
+         <div class="row">
+           <div class="col-xs-8 col-xs-offset-2">
+             <%= form_tag experiments_path method: :POST do %>
+               <%= hidden_field_tag :name, @task.name %>
+               <%= submit_tag "Submit" %>
+             <% end %>
+           </div>
+         </div>
+
+       b. "experiments_path method: :POST"      => will be submitted to experiments controllers create action
+       (You can get such path from the rake routes)
+
+       c. To receive the value form experiments controller
+         class ExperimentsController < ApplicationController
+
+           def create
+             @experiment = Experiment.new(name:params[:name])
+             if @experiment.save
+               flash[:success] = "Created successfully"
+               redirect_to tasks_path
+             else
+               render :back
+             end
+           end
+
+           # private
+           # def experiment_params
+           #   params.require(:experiment).permit(:name)
+           # end
+         end
+
