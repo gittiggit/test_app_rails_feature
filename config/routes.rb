@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   resources :tasks
   resources :experiments
   resources :departments
+  resources :prejobs
 
   get 'welcomes/about'
 

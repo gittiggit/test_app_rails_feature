@@ -1,0 +1,9 @@
+<%= form_for @job, remote: true do |job| %>
+  <p>
+    <%= job.label :name %>
+    <%= job.text_field :name %>
+  </p>
+  <p>
+    <%= job.submit %>
+  </p>
+<% end %>

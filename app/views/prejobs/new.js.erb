@@ -1,0 +1,13 @@
+//$(document).ready(function(){
+//  $("#create-job-link").hide().after('<%#= j render("form") %>');
+//});
+// here j is used to escape single/double quote since we are inserting ruby code inside
+// the javascript
+
+// alternative
+
+//$("<%#= escape_javascript(render @department) %>").appendTo(".department-index");
+
+$(document).ready(function(){
+  $("#create-job-link").hide().after("<%= escape_javascript(render "form") %>");
+});

@@ -596,3 +596,148 @@ code that will be sent and executed on the client side.""
 ==========================================================================================================
 
 
+Step 36: Implementing ajax for create, update, delete for the Job model
+        a. rails g model Prejob name:string complete:boolean(make it default:false)
+        b. rails g controller Prejobs index show new edit
+        c. in the prejobs controller
+
+      class PrejobsController < ApplicationController
+        def index
+          @complete_jobs = Prejob.where(complete: true)
+          @incomplete_jobs = Prejob.where(complete: false)
+        end
+
+        def show
+          @job = Prejob.find params[:id]
+        end
+
+        def new
+          @job = Prejob.new
+        end
+
+        def create
+          @job = Prejob.new prejob_params
+          if @job.save
+            flash[:success] = "Created successfully"
+            redirect_to prejobs_path
+          else
+            render :new
+          end
+        end
+
+        def edit
+          @job = Prejob.find params[:id]
+        end
+
+        def update
+          @job = Prejob.find params[:id]
+          if @job.update prejob_params
+            flash[:success] = "Updated"
+            redirect_to @job
+          else
+            render :edit
+          end
+        end
+
+        private
+        def prejob_params
+          params.require(:prejob).permit :name
+        end
+      end
+
+       d. in the index.html.erb
+
+       <h1 align="Center">All jobs</h1>
+
+       <p>Completed task</p>
+       <%= render "complete" %>
+       <p>Incomplete task</p>
+       <%= render "incomplete" %>
+
+       e. in the _complete.html.erb
+
+         <% @complete_jobs.each do |job| %>
+           <p>
+             <b>Name:</b><%= link_to job.name, job %>
+           </p>
+         <% end %>
+
+       f. in the _incomplete.html.erb
+
+         <% @incomplete_jobs.each do |job| %>
+           <p>
+             <b>Name:</b><%= link_to job.name, job %>
+           </p>
+         <% end %>
+
+       g. in the show.html.erb
+
+         <h1 align="center">A particular job</h1>
+         <b>Name: </b><%= @job.name %>
+
+       h. in the edit.html.erb
+
+         <h1 align="center">Edit job</h1>
+         <%= form_for @job do |job| %>
+           <p>
+             <%= job.label :name %>
+             <%= job.text_field :name %>
+           </p>
+           <p>
+             <%= job.submit %>
+           </p>
+         <% end %>
+
+       i. in the new.html.erb
+
+         <h1 align="center">New job</h1>
+         <%= form_for @job do |job| %>
+           <p>
+             <%= job.label :name %>
+             <%= job.text_field :name %>
+           </p>
+           <p>
+             <%= job.submit %>
+           </p>
+         <% end %>
+
+===========================================================================================================
+
+Step 37: Lets implement ajax
+        a. first make change to index, give the remote attribute to the link
+
+         <h1 align="Center">All jobs</h1>
+         <p>
+           <%= link_to "Create a job", new_prejob_path, remote: true, class:"btn btn-primary", id: "create-job-link" %>
+         </p>
+         <p>Completed task</p>
+         <div id="complete-task">
+           <%= render "complete" %>
+         </div>
+
+         <p>Incomplete task</p>
+         <div id="incomplete-task">
+           <%= render "incomplete" %>
+         </div>
+
+        b. create the js file views/prejobs/create.js.erb
+
+
+          //$(document).ready(function(){
+          //  $("#create-job-link").hide().after('<%#= j render("form") %>');
+          //});
+          // here j is used to escape single/double quote since we are inserting ruby code inside
+          // the javascript
+
+          // alternative
+
+          //$("<%#= escape_javascript(render @department) %>").appendTo(".department-index");
+
+          $(document).ready(function(){
+            $("#create-job-link").hide().after("<%= escape_javascript(render "form") %>");
+          });
+
+After that see the result, after have a click in the create link, it will hide and after that it will render a new form
+in the index without reloading the index page
+
+        c.

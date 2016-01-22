@@ -1,0 +1,13 @@
+<h1 align="Center">All jobs</h1>
+<p>
+  <%= link_to "Create a job", new_prejob_path, remote: true, class:"btn btn-primary", id: "create-job-link" %>
+</p>
+<p>Completed task</p>
+<div id="complete-task">
+  <%= render "complete" %>
+</div>
+
+<p>Incomplete task</p>
+<div id="incomplete-task">
+  <%= render "incomplete", @ %>
+</div>
