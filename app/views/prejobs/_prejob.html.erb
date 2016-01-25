@@ -1,0 +1,6 @@
+<%= form_for prejob do |f| %>
+    <%= f.check_box :complete %>
+    <%= f.submit "Update" %>
+    <%= f.label :complete, prejob.name %>
+    <%= link_to "(remove)", prejob, method: :delete, data: {confirm: "Are you sure"}, remote: true %>
+<% end %>

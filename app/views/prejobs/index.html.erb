@@ -3,11 +3,11 @@
   <%= link_to "Create a job", new_prejob_path, remote: true, class:"btn btn-primary", id: "create-job-link" %>
 </p>
 <p>Completed task</p>
-<div id="complete-task">
-  <%= render "complete" %>
+<div id="complete-tasks">
+  <%= render @complete_tasks %>
 </div>
 
 <p>Incomplete task</p>
-<div id="incomplete-task">
-  <%= render "incomplete", @ %>
+<div id="incomplete-tasks">
+  <%= render @incomplete_tasks %>
 </div>

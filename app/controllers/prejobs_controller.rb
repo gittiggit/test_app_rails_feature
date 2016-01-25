@@ -1,7 +1,7 @@
 class PrejobsController < ApplicationController
   def index
-    @complete_jobs = Prejob.where(complete: true)
-    @incomplete_jobs = Prejob.where(complete: false)
+    @complete_tasks = Prejob.where(complete: true)
+    @incomplete_tasks = Prejob.where(complete: false)
   end
 
   def show
@@ -13,8 +13,8 @@ class PrejobsController < ApplicationController
   end
 
   def create
-    @job = Prejob.new prejob_params
-    if @job.save
+    @prejob = Prejob.new prejob_params
+    if @prejob.save
       respond_to do |format|
         format.html {redirect_to prejobs_path}
         format.js
@@ -39,6 +39,17 @@ class PrejobsController < ApplicationController
       redirect_to @job
     else
       render :edit
+    end
+  end
+
+  def destroy
+    @job = Prejob.find params[:id]
+    @job.destroy
+    # flash[:notice] = "Deleted"
+    # redirect_to prejobs_path
+    respond_to do |format|
+      format.html {redirect_to prejobs_path}
+      format.js
     end
   end
 

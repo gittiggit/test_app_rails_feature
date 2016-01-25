@@ -1,3 +1,6 @@
-$("#new_prejob").remove();
-$("#create-job-link").show();
-$("#incomplete-task").append("<%= j render() %>");
+$(document).ready(function(){
+    $("#new_prejob").remove();  /* this id is given by rails to this form */
+    alert("dkfjvas d");
+    $("#create-job-link").show();
+    $("#incomplete-tasks").append("<%= j render(@prejob) %>");
+});

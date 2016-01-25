@@ -740,4 +740,48 @@ Step 37: Lets implement ajax
 After that see the result, after have a click in the create link, it will hide and after that it will render a new form
 in the index without reloading the index page
 
-        c.
+        c. Now create a prejob without a page load, and after creating the job form("#new_prejob") should be removed,
+           and after that create link("#create-job-link") will be shown and page will be updated without page load.
+
+        d. To implement this first I have to make a partial _prejob.html.erb,
+
+           <%= form_for prejob do |f| %>
+               <%= f.check_box :complete %>
+               <%= f.submit "Update" %>
+               <%= f.label :complete, prejob.name %>
+               <%= link_to "(remove)", prejob, method: :delete, data: {confirm: "Are you sure"}, remote: true %>
+           <% end %>
+
+         d. in the prejobs controller
+           def create
+               @prejob = Prejob.new prejob_params
+               if @prejob.save
+                 respond_to do |format|
+                   format.html {redirect_to prejobs_path}
+                   format.js
+                 end
+               end
+
+         e. create the create.js.erb file like as follows
+               $(document).ready(function(){
+                   $("#new_prejob").remove();  /* this id is given by rails to this form */
+                   alert("dkfjvas d");
+                   $("#create-job-link").show();
+                   $("#incomplete-tasks").append("<%= j render(@prejob) %>");
+               });
+
+         f. Update the index like as:
+               <h1 align="Center">All jobs</h1>
+               <p>
+                 <%= link_to "Create a job", new_prejob_path, remote: true, class:"btn btn-primary", id: "create-job-link" %>
+               </p>
+               <p>Completed task</p>
+               <div id="complete-tasks">
+                 <%= render @complete_tasks %>
+               </div>
+
+               <p>Incomplete task</p>
+               <div id="incomplete-tasks">
+                 <%= render @incomplete_tasks %>
+               </div>
+         g.
