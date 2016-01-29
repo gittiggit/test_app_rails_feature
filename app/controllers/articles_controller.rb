@@ -23,6 +23,9 @@ class ArticlesController < ApplicationController
   end
 
   def show
+    if request.path != article_path(@article)
+      redirect_to @article, status: :moved_permanently
+    end
   end
 
   def edit
@@ -50,7 +53,7 @@ class ArticlesController < ApplicationController
   end
 
   def set_article
-    @article = Article.find params[:id]
+    @article = Article.friendly.find params[:id]
   end
 
   def require_same_user

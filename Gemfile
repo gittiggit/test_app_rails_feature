@@ -17,6 +17,7 @@ gem 'sdoc', '~> 0.4.0', group: :doc
 gem "pry"
 gem "bootstrap-sass", "~> 3.3.6"
 gem 'bcrypt', '~> 3.1.7'
+gem "friendly_id"
 group :development, :test do
   gem 'byebug'
   gem "pry"

@@ -527,6 +527,7 @@ Step 35: Submitting form using ajax(departments listing and create in the index 
          a. rails g model Department name:string location:string
          b. rails g controller Departments index
          c. views/departments/index
+ ```
            <h1 align="center">All the Departments</h1>
            <div class="department-index">
              <%= render @departments %>
@@ -545,9 +546,9 @@ Step 35: Submitting form using ajax(departments listing and create in the index 
               <%= d.submit %>
              </p>
            <% end %>
-
+```
          d. department controller
-
+```
          class DepartmentsController < ApplicationController
            def index
              @departments = Department.all
@@ -573,25 +574,25 @@ Step 35: Submitting form using ajax(departments listing and create in the index 
              params.require(:department).permit :name, :location
            end
          end
-
+```
 ""Notice the format.js in the respond_to block; that allows the controller to respond to your Ajax request.
 You then have a corresponding app/views/users/create.js.erb view file that generates the actual JavaScript
 code that will be sent and executed on the client side.""
 
 
          f. departments/_department.html.erb
-
+```
          <p>
            <b>Name:</b> <%= department.name %>
          </p>
          <p>
            <b>Location:</b> <%= department.location %>
          </p>
-
+```
          g. departments/create.js.erb
-
+```
          $("<%= escape_javascript(render @department) %>").appendTo(".department-index");
-
+```
 
 ==========================================================================================================
 
@@ -600,7 +601,7 @@ Step 36: Implementing ajax for create, update, delete for the Job model
         a. rails g model Prejob name:string complete:boolean(make it default:false)
         b. rails g controller Prejobs index show new edit
         c. in the prejobs controller
-
+```
       class PrejobsController < ApplicationController
         def index
           @complete_jobs = Prejob.where(complete: true)
@@ -644,39 +645,39 @@ Step 36: Implementing ajax for create, update, delete for the Job model
           params.require(:prejob).permit :name
         end
       end
-
+```
        d. in the index.html.erb
-
+```
        <h1 align="Center">All jobs</h1>
 
        <p>Completed task</p>
        <%= render "complete" %>
        <p>Incomplete task</p>
        <%= render "incomplete" %>
-
+```
        e. in the _complete.html.erb
-
+```
          <% @complete_jobs.each do |job| %>
            <p>
              <b>Name:</b><%= link_to job.name, job %>
            </p>
          <% end %>
-
+```
        f. in the _incomplete.html.erb
-
+```
          <% @incomplete_jobs.each do |job| %>
            <p>
              <b>Name:</b><%= link_to job.name, job %>
            </p>
          <% end %>
-
+```
        g. in the show.html.erb
-
+```
          <h1 align="center">A particular job</h1>
          <b>Name: </b><%= @job.name %>
-
+```
        h. in the edit.html.erb
-
+```
          <h1 align="center">Edit job</h1>
          <%= form_for @job do |job| %>
            <p>
@@ -687,9 +688,9 @@ Step 36: Implementing ajax for create, update, delete for the Job model
              <%= job.submit %>
            </p>
          <% end %>
-
+```
        i. in the new.html.erb
-
+```
          <h1 align="center">New job</h1>
          <%= form_for @job do |job| %>
            <p>
@@ -700,12 +701,12 @@ Step 36: Implementing ajax for create, update, delete for the Job model
              <%= job.submit %>
            </p>
          <% end %>
-
+```
 ===========================================================================================================
 
 Step 37: Lets implement ajax
         a. first make change to index, give the remote attribute to the link
-
+```
          <h1 align="Center">All jobs</h1>
          <p>
            <%= link_to "Create a job", new_prejob_path, remote: true, class:"btn btn-primary", id: "create-job-link" %>
@@ -719,9 +720,9 @@ Step 37: Lets implement ajax
          <div id="incomplete-task">
            <%= render "incomplete" %>
          </div>
-
+```
         b. create the js file views/prejobs/create.js.erb
-
+```
 
           //$(document).ready(function(){
           //  $("#create-job-link").hide().after('<%#= j render("form") %>');
@@ -736,8 +737,105 @@ Step 37: Lets implement ajax
           $(document).ready(function(){
             $("#create-job-link").hide().after("<%= escape_javascript(render "form") %>");
           });
-
+```
 After that see the result, after have a click in the create link, it will hide and after that it will render a new form
 in the index without reloading the index page
 
         c.
+
+
+=================================================================================================================
+
+Step 38: Add semantic/search engine/ user friendly url to article,
+    *** There is to way to do this
+    1. over-wright the to_param method in the model
+    2. Use the gem friendly_id
+
+       a. gem "friendly_id"
+       b. In the article model, include this at the top  of the model
+       ```
+         extend FriendlyId
+         friendly_id :title   # passing the title to use it in the url
+       ```
+       c. In the article controller, change the set_article method like as
+```
+           def set_article
+             @article = Article.friendly.find params[:id]
+           end
+```
+       Now see the output. And in this case you have to change every find in your controller. Instead step c, you
+       can do that by changing in the model like as follows
+       ```
+         extend FriendlyId
+           friendly_id :title, use: [:finders]   # passing the title to use it in the url
+
+       ```
+       d. The spaces in the title will not generate a friendly url, to handle this change the model in the following way,
+          and a column named slug to the articles.
+          ```
+             extend FriendlyId
+             friendly_id :title, use: [:finders, :slugged]   # passing the title to use it in the url
+
+          ```
+       then
+           => rails g migration add_slug_to_articles slug:string
+
+       Change the migration to add an index for slug column
+
+       ```
+
+           class AddSlugToArticles < ActiveRecord::Migration
+             def change
+               add_column :articles, :slug, :string
+               add_index :articles, :slug
+             end
+           end
+
+       ```
+       ***Now I have some existing articles and to fill their slug column with the value, in the rails console, run
+          the command
+
+            => Article.find_each(&:save)
+
+           That will generate the slug attributes for them
+       **Now in the url, the spaces will be filled with a dash(-)
+
+       e.Next issue, when we update an article's title, user will not get the updated article with the previous title.
+         There are two solution of this
+         1. First way: Instruct the friendly_id not to change the article's slug for the existing record by overriting the method
+          should_generate_new_friendly_id? in the model
+
+       ```
+
+        extend FriendlyId
+        friendly_id :title, use: [:finders, :slugged]   # passing the title to use it in the url
+
+        def should_generate_new_friendly_id?
+          new_record?    #Returns true if this object hasn’t been saved yet – that is, a
+                         # record for the object doesn’t exist in the database yet; otherwise, returns false.
+        end
+
+       ```
+         2. Second way: To use the both the previous slug and the updated slug, we have to add a history option in the
+            friendly_id and comment the should_generate_new_friendly_id? method
+       ```
+              extend FriendlyId
+              friendly_id :title, use: [:finders, :slugged, :history]   # passing the title to use it in the url
+
+              # def should_generate_new_friendly_id?
+              #   new_record?    #Returns true if this object hasn’t been saved yet – that is, a
+              #                  # record for the object doesn’t exist in the database yet; otherwise, returns false.
+              # end
+       ```
+       Then the history needs to be stored somewhere, for this we have to generate a new migration for friendly_id
+
+       => rails g friendly_id
+
+       f. Now if we want that, if we refer to the article by it's previeous title but it will be redirect to the new
+          title, to do that we have to make a change to the articles controller
+
+
+
+
+
+
