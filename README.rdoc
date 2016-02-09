@@ -844,4 +844,126 @@ Step 39: Have some time with geocoder gem
         c.
 
 
+Step 40: JQuery date picker
+        a. gem "jquery-ui-rails"
+        b. bundle install
+        c. rails g model TimeExp date:date
+        d. rails g controller TimeExps index new show edit
+        e. In the app/assets/javascripts/application.js
+        //= require jquery-ui
+        //= require jquery.ui.datepicker
+        f. In the app/assets/stylesheets/application.js
+         *= require jquery-ui
+         *= require jquery.ui.datepicker
+        g. views/time_exps/new
+
+```
+
+        <div class="row">
+          <div class="col-xs-12">
+          <%= form_for(@time_exp, html: {class:"form-horizontal", role: "form"}) do |t| %>
+            <div class="form-group">
+              <div class="control-label col-sm-2">
+                <%= t.label :date %>
+              </div>
+              <div class="col-sm-3 input-group date" id="date1picker">
+                <%= t.text_field :date, class: "form-control", placeholder: "Enter the date"%>
+                <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="control-label col-sm-2">
+                <%= t.label :date2 %>
+              </div>
+              <div class="col-sm-3 input-group date">
+                <%= t.text_field :date2, class: "form-control", placeholder: "Enter the date" %>
+                <span class="input-group-addon">
+                  <span class="glyphicon glyphicon-calendar"></span>
+                </span>
+              </div>
+            </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <%= t.submit class:"btn btn-primary btn-sm" %>
+                </div>
+              </div>
+          <% end %>
+        </div>
+        </div>
+
+```
+          h. In the assets/javascripts/time_exps.js
+
+```
+        //$document.ready(function(){
+        //    alert("asdu sa");
+        //    $(".time_exp_date").datepicker();
+        //});
+
+        // In rails 4, don't need to use $document.ready(){} because of the
+        // rails default turbolink gem
+
+       $(function(){
+           $("#time_exp_date").datepicker({
+               duration: "slow",
+               dateFormat: "yy-mm-dd"
+           });
+       });
+
+```
+* For bootstrap date picker
+
+          a. gem 'bootstrap-datepicker-rails'
+          b. in the application.js
+           //= require bootstrap-datepicker
+          c. in the application.css.scss
+           *= require bootstrap-datepicker3
+          d.
+
+```
+        $(function(){
+            $("#date1picker").datepicker({
+                format: "yy-mm-dd"
+            });
+            $("#time_exp_date2").datepicker({
+                format: "dd-yy-mm"
+            });
+        });
+
+```
+          c.
+
+
+*** jQuery timepicker rails(inspired by google calendar)
+          a. resources
+          https://rubygems.org/gems/jquery-timepicker-rails
+          https://github.com/cover/jquery-timepicker-rails
+          http://www.rubydoc.info/gems/jquery-timepicker-rails/1.4.3
+          http://jonthornton.github.io/jquery-timepicker/
+
+          b. gem 'jquery-timepicker-rails'
+          c. In the application.js
+             //= require jquery.timepicker.js
+
+          d. In the application.css
+              *= require jquery.timepicker.css
+          e. Add the following js
+
+```
+        $(function(){
+            $("#time_exp_start_time").timepicker();
+            $("#time_exp_end_time").timepicker();
+        });
+
+```
+
+
+
+
+
+
+
+
 

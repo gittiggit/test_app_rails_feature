@@ -6,6 +6,7 @@ Rails.application.routes.draw do
   resources :experiments
   resources :departments
   resources :prejobs
+  resources :time_exps
 
   get 'welcomes/about'
 

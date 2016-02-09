@@ -1,0 +1,53 @@
+<h1>TimeExps#new</h1>
+<p>Find me in app/views/time_exps/new.html.erb</p>
+
+<div class="row">
+  <div class="col-xs-12">
+  <%= form_for(@time_exp, html: {class:"form-horizontal", role: "form"}) do |t| %>
+    <div class="form-group">
+      <div class="control-label col-sm-2">
+        <%= t.label :date %>
+      </div>
+      <div class="col-sm-3 input-group date" id="date1picker">
+        <%= t.text_field :date, class: "form-control", placeholder: "Enter the date"%>
+        <span class="input-group-addon">
+          <span class="glyphicon glyphicon-calendar"></span>
+        </span>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="control-label col-sm-2">
+        <%= t.label :date2 %>
+      </div>
+      <div class="col-sm-3 input-group date">
+        <%= t.text_field :date2, class: "form-control", placeholder: "Enter the date" %>
+        <span class="input-group-addon">
+          <span class="glyphicon glyphicon-calendar"></span>
+        </span>
+      </div>
+    </div>
+    <div class="form-group">
+      <div class="control-label col-sm-2">
+        <%= t.label "Select time" %>
+      </div>
+      <div>
+        <div class="col-sm-2">
+          <%= t.text_field :start_time, class: "form-control", placeholder: "Start time"%>
+        </div>
+        <div class="col-sm-1">To
+        </div>
+        <div class="col-sm-2">
+          <%= t.text_field :end_time, class: "form-control", placeholder: "End time"%>
+        </div>
+      </div>
+    </div>
+      <div class="form-group">
+        <div class="col-sm-offset-2 col-sm-10">
+          <%= t.submit class:"btn btn-primary btn-sm" %>
+        </div>
+      </div>
+  <% end %>
+</div>
+</div>
+
+
