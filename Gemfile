@@ -13,6 +13,7 @@ gem 'jquery-ui-rails'
 gem 'jbuilder', '~> 2.0'
 gem "will_paginate", "3.0.7"
 gem "bootstrap-will_paginate", "0.0.10"
+gem "geocoder"
 gem 'sdoc', '~> 0.4.0', group: :doc
 gem "pry"
 gem "bootstrap-sass", "~> 3.3.6"

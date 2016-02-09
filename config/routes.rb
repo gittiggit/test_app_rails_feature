@@ -1,5 +1,6 @@
 Rails.application.routes.draw do
 
+  resources :locations
   resources :test_jqueries
   resources :tasks
   resources :experiments

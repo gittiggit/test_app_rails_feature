@@ -835,7 +835,13 @@ Step 38: Add semantic/search engine/ user friendly url to article,
           title, to do that we have to make a change to the articles controller
 
 
+=========================================================================================================
 
+Step 39: Have some time with geocoder gem
+
+        a. gem 'geocoder'
+        b. bundle install
+        c.
 
 
 
