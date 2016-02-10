@@ -21,7 +21,8 @@ gem 'bcrypt', '~> 3.1.7'
 gem "friendly_id"
 gem 'bootstrap-datepicker-rails', :require => 'bootstrap-datepicker-rails',
     :git => 'git://github.com/Nerian/bootstrap-datepicker-rails.git'
-gem 'jquery-timepicker-rails'
+gem "jquery-timepicker-rails"
+gem "jquery-validation-rails"
 group :development, :test do
   gem 'byebug'
   gem "pry"

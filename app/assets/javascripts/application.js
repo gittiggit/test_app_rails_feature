@@ -17,6 +17,8 @@
 //= require bootstrap-sprockets
 //= require bootstrap-datepicker
 //= require jquery.timepicker.js
+//= require jquery.validate
+//= require jquery.validate.additional-methods
 //= require turbolinks
 //= require_tree .
 

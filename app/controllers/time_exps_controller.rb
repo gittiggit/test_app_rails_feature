@@ -13,7 +13,7 @@ class TimeExpsController < ApplicationController
       flash[:success] = "Created"
       redirect_to time_exps_path
     else
-      render :back
+      render :new
     end
   end
 
@@ -25,6 +25,6 @@ class TimeExpsController < ApplicationController
 
   private
   def timeexp_params
-    params.require(:time_exp).permit :date, :date2
+    params.require(:time_exp).permit :date1, :date2, :start_time, :end_time
   end
 end

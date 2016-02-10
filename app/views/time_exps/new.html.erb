@@ -1,25 +1,26 @@
 <h1>TimeExps#new</h1>
 <p>Find me in app/views/time_exps/new.html.erb</p>
 
+<%= render "shared/errors", obj:@time_exp %>
+
 <div class="row">
   <div class="col-xs-12">
-  <%= form_for(@time_exp, html: {class:"form-horizontal", role: "form"}) do |t| %>
+  <%= form_for(@time_exp, html: {onsubmit: "return validatedate();", class:"form-horizontal", role: "form"}) do |t| %>
     <div class="form-group">
       <div class="control-label col-sm-2">
-        <%= t.label :date %>
+        <%= t.label :date1 %>
       </div>
-      <div class="col-sm-3 input-group date" id="date1picker">
-        <%= t.text_field :date, class: "form-control", placeholder: "Enter the date"%>
-        <span class="input-group-addon">
-          <span class="glyphicon glyphicon-calendar"></span>
-        </span>
+      <div class="col-sm-3">
+        <%= t.text_field :date1, class: "form-control", placeholder: "Enter the date"%>
+      </div>
+      <div id="errmsg">
       </div>
     </div>
     <div class="form-group">
       <div class="control-label col-sm-2">
         <%= t.label :date2 %>
       </div>
-      <div class="col-sm-3 input-group date">
+      <div class="col-sm-3 input-group date" id="date2picker">
         <%= t.text_field :date2, class: "form-control", placeholder: "Enter the date" %>
         <span class="input-group-addon">
           <span class="glyphicon glyphicon-calendar"></span>
@@ -43,7 +44,7 @@
     </div>
       <div class="form-group">
         <div class="col-sm-offset-2 col-sm-10">
-          <%= t.submit class:"btn btn-primary btn-sm" %>
+          <%= t.submit onclick:"return comparetime();", class:"btn btn-primary btn-sm" %>
         </div>
       </div>
   <% end %>

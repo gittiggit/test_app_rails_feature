@@ -958,11 +958,93 @@ Step 40: JQuery date picker
         });
 
 ```
+```
+
+Step 41: Client side validation with jQuery validation plugin and javascript
+
+         a. gem 'jquery-validation-rails'
+         b. bundle install
+         c. In the application.js
+            //= require jquery.validate
+            //= require jquery.validate.additional-methods
+         d. In the time_exps.js
+
+```
+         $(function(){
+             $("#new_time_exp").validate({
+                debug: false,
+                rules: {
+                     "time_exp[date1]": {
+                         required: true,
+                         date: true
+                     },
+                     "time_exp[date2]": {
+                         required: true,
+                         date: true
+                     },
+                     "time_exp[start_time]": {
+                         required: true
+                     },
+                     "time_exp[end_time]": {
+                         required: true
+                     }
+                }
+             });
+         });
+
+```
+         e. for more information
+
+              http://jqueryvalidation.org/documentation/
+              http://jqueryvalidation.org/
+              http://jqueryvalidation.org/files/demo/
 
 
+         f. For javascript validation, in the time_exps.js
+
+```
+
+              function comparetime(){
+                  var st = document.forms["new_time_exp"]["time_exp_start_time"].value;
+                  var et = document.forms["new_time_exp"]["time_exp_end_time"].value;
+                  if (st >= et){
+                      alert("End time must be greater than start time");
+                      return false;
+                  }
+              }
+
+              function validatedate(){
+                  var d1 = new Date(document.forms["new_time_exp"]["time_exp_date1"].value);
+                  var tod = new Date();
+                  if (d1 < tod){
+                      alert("Selected date must not be past");
+                      return false;
+                  }
+              }
+
+```
+
+          g. and call them from the button or form like as follows
+
+```
+               <%= form_for(@time_exp, html: {onsubmit: "return validatedate();", class:"form-horizontal",
+               role: "form"}) do |t| %>
+
+               <% end %>
+
+```
+
+```
+          <div class="form-group">
+            <div class="col-sm-offset-2 col-sm-10">
+              <%= t.submit onclick:"return comparetime();", class:"btn btn-primary btn-sm" %>
+            </div>
+          </div>
+
+```
 
 
-
+=======================================================================================================================
 
 
 

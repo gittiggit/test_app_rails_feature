@@ -105,7 +105,7 @@ ActiveRecord::Schema.define(version: 20160209084834) do
   end
 
   create_table "time_exps", force: :cascade do |t|
-    t.date     "date"
+    t.date     "date1"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.date     "date2"

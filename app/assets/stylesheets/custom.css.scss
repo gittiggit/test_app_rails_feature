@@ -33,7 +33,8 @@ $navbar-default-bg: #000000;
 	color: #777
 }
 .footer a:hover{
-	color: #222
+	color: #00f;
+    background-color: #fff
 }
 
 .footer small{
@@ -77,4 +78,9 @@ $navbar-default-bg: #000000;
   text-transform: uppercase;
   letter-spacing: -1px;
   font-weight: bold;
+}
+label.error{
+  font-weight:normal;
+  color:#FF0000 !important;
+  display: inline;
 }
